@@ -1,0 +1,36 @@
+/* Reset styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Global font-family and colors */
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #F4F1DE; /* Background Color */
+  color: #2D2A32; /* Text Color */
+  line-height: 1.6;
+}
+
+/* Links */
+a {
+  color: #03CF9C; /* Primary Highlight */
+  text-decoration: none;
+}
+
+a:hover {
+  color: #62B3ED; /* Secondary Highlight */
+}
+
+/* Buttons */
+button {
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
