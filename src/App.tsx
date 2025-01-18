@@ -1,4 +1,3 @@
-// src/App.tsx
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useState, createContext, useContext } from 'react';
 import Login from './components/Login';
@@ -26,13 +25,16 @@ function App() {
   const [accessToken, setAccessToken] = useState<string | null>(null);
 
   return (
-    <AuthContext.Provider value={{ 
-      isAuthenticated, 
-      setIsAuthenticated,
-      accessToken,
-      setAccessToken 
-    }}>
-      <Router>
+    <AuthContext.Provider
+      value={{
+        isAuthenticated,
+        setIsAuthenticated,
+        accessToken,
+        setAccessToken,
+      }}
+    >
+      {/* Add the base name for GitHub Pages */}
+      <Router basename="/allcheerparser">
         <Routes>
           <Route path="/" element={<Login />} />
           <Route
