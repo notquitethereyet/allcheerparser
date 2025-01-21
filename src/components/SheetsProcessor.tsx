@@ -422,27 +422,6 @@ const processAddressData = async (authToken: string) => {
   return addressData;
 };
 
-
-
-// // Processing button component
-// const ProcessingButton = ({
-//   onClick,
-//   isLoading,
-//   children,
-// }: {
-//   onClick: () => void;
-//   isLoading: boolean;
-//   children: React.ReactNode;
-// }) => (
-//   <button
-//     onClick={onClick}
-//     disabled={isLoading}
-//     className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors w-full md:w-auto"
-//   >
-//     {isLoading ? "Processing..." : children}
-//   </button>
-// );
-
 // Processor component
 const Processor = ({ processFunction, title }: { processFunction: any; title: string }) => {
   const [isLoading, setIsLoading] = useState(false);
