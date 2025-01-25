@@ -1,5 +1,8 @@
 // src/config.ts
 export const googleConfig = {
-  clientId: import.meta.env.VITE_CLIENT_ID || '',
-  apiKey: import.meta.env.VITE_API_KEY || '',
+  clientId: import.meta.env.VITE_CLIENT_ID,
 };
+
+export const allowedEmails = (
+  import.meta.env.VITE_WHITELISTED_EMAILS || ""
+).split(",").map((email: string) => email.trim().toLowerCase());

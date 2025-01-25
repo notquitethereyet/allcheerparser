@@ -1,9 +1,9 @@
-# Workflow for deploying static content to GitHub Pages with pnpm
+# Workflow for deploying static content to Pages with pnpm
 name: Deploy static content to Pages
 
 on:
   push:
-    branches: ['main'] # Triggers on pushes to the main branch
+    branches: ["main"] # Triggers on pushes to the main branch
   workflow_dispatch: # Allows manual deployment
 
 permissions:
@@ -12,7 +12,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: 'pages'
+  group: "pages"
   cancel-in-progress: true
 
 jobs:
@@ -41,9 +41,10 @@ jobs:
         run: pnpm install
 
       - name: Build the site
-        env: # Load environment variables from .env.production
+        env: # Load environment variables from GitHub Secrets
           VITE_CLIENT_ID: ${{ secrets.VITE_CLIENT_ID }}
           VITE_API_KEY: ${{ secrets.VITE_API_KEY }}
+          VITE_WHITELISTED_EMAILS: ${{ secrets.VITE_WHITELISTED_EMAILS }} # Add whitelist
         run: pnpm build
 
       - name: Setup Pages
@@ -52,7 +53,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './dist'
+          path: "./dist"
 
       - name: Deploy to GitHub Pages
         id: deployment

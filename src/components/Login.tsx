@@ -1,8 +1,8 @@
-import { useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../App';
-import { googleConfig } from '../config';
-import logo from '../assets/logo.png';
+import { useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../App";
+import { googleConfig, allowedEmails } from "../config";
+import logo from "../assets/logo.png";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -10,12 +10,12 @@ const Login = () => {
 
   useEffect(() => {
     if (auth?.isAuthenticated) {
-      navigate('/files');
+      navigate("/files");
       return;
     }
 
-    const script = document.createElement('script');
-    script.src = 'https://accounts.google.com/gsi/client';
+    const script = document.createElement("script");
+    script.src = "https://accounts.google.com/gsi/client";
     script.async = true;
     script.defer = true;
     script.onload = initializeGoogleIdentity;
@@ -35,13 +35,13 @@ const Login = () => {
     });
 
     window.google?.accounts.id.renderButton(
-      document.getElementById('googleSignInDiv'),
+      document.getElementById("googleSignInDiv"),
       {
-        type: 'standard',
-        theme: 'outline',
-        size: 'large',
+        type: "standard",
+        theme: "outline",
+        size: "large",
         width: 250,
-        logo_alignment: 'center',
+        logo_alignment: "center",
       }
     );
 
@@ -52,12 +52,28 @@ const Login = () => {
     if (credentialResponse) {
       const tokenClient = window.google?.accounts.oauth2.initTokenClient({
         client_id: googleConfig.clientId,
-        scope: 'https://www.googleapis.com/auth/drive.readonly',
+        scope: "https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/userinfo.email",
         callback: (tokenResponse: any) => {
           if (tokenResponse.access_token) {
-            auth?.setAccessToken(tokenResponse.access_token);
-            auth?.setIsAuthenticated(true);
-            navigate('/files');
+            fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+              headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
+            })
+              .then((res) => res.json())
+              .then((userInfo) => {
+                const userEmail = userInfo.email.toLowerCase(); // Normalize email to lowercase
+
+                if (allowedEmails.includes(userEmail)) {
+                  auth?.setAccessToken(tokenResponse.access_token);
+                  auth?.setIsAuthenticated(true);
+                  navigate("/files");
+                } else {
+                  navigate("/not-authorized"); // Redirect unauthorized users
+                }
+              })
+              .catch((err) => {
+                console.error("Failed to fetch user info", err);
+                navigate("/not-authorized");
+              });
           }
         },
       });
@@ -65,6 +81,7 @@ const Login = () => {
       tokenClient?.requestAccessToken();
     }
   };
+
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-background">

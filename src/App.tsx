@@ -1,7 +1,8 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { useState, createContext, useContext } from 'react';
-import Login from './components/Login';
-import SheetsProcessor from './components/SheetsProcessor';
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { useState, createContext, useContext } from "react";
+import Login from "./components/Login";
+import SheetsProcessor from "./components/SheetsProcessor";
+import NotAuthorized from "./components/NotAuthorized";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -33,10 +34,12 @@ function App() {
         setAccessToken,
       }}
     >
-      {/* Add the base name for GitHub Pages */}
       <Router basename="/allcheerparser">
         <Routes>
+          {/* Public route for login */}
           <Route path="/" element={<Login />} />
+
+          {/* Private route for SheetsProcessor */}
           <Route
             path="/files"
             element={
@@ -45,6 +48,12 @@ function App() {
               </PrivateRoute>
             }
           />
+
+          {/* Route for unauthorized users */}
+          <Route path="/not-authorized" element={<NotAuthorized />} />
+
+          {/* Redirect for undefined paths */}
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Router>
     </AuthContext.Provider>
