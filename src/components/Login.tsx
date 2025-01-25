@@ -61,13 +61,15 @@ const Login = () => {
               .then((res) => res.json())
               .then((userInfo) => {
                 const userEmail = userInfo.email.toLowerCase(); // Normalize email to lowercase
-
+                console.log("Authenticated User Email:", userEmail);
+  
                 if (allowedEmails.includes(userEmail)) {
                   auth?.setAccessToken(tokenResponse.access_token);
                   auth?.setIsAuthenticated(true);
                   navigate("/files");
                 } else {
-                  navigate("/not-authorized"); // Redirect unauthorized users
+                  console.log("User not authorized:", userEmail);
+                  navigate("/not-authorized");
                 }
               })
               .catch((err) => {
@@ -77,10 +79,11 @@ const Login = () => {
           }
         },
       });
-
+  
       tokenClient?.requestAccessToken();
     }
   };
+  
 
 
   return (
