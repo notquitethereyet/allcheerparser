@@ -8,4 +8,4 @@ export const allowedEmails = (
 ).split(",").map((email: string) => email.trim().toLowerCase());
 
 // Debugging the whitelist
-console.log("Whitelisted Emails:", allowedEmails);
+// console.log("Whitelisted Emails:", allowedEmails);

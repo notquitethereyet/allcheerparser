@@ -4,7 +4,7 @@ import { saveAs } from "file-saver";
 import { AuthContext } from "../App";
 
 interface ProcessorProps {
-  processFunction: (authToken: string, folder: any) => Promise<any>;
+  processFunction: (authToken: string, folder: any, onProgress?: (message: string) => void) => Promise<any>;
   title: string;
   selectedFolder: any;
   disabled: boolean;
@@ -27,10 +27,18 @@ const Processor: React.FC<ProcessorProps> = ({
     }
 
     setIsLoading(true);
-    setStatus(`Processing ${title.toLowerCase()}...`);
+    setStatus(`Starting ${title.toLowerCase()} processing...`);
 
     try {
-      const data = await processFunction(auth.accessToken, selectedFolder);
+      // Ensure `onProgress` is always provided to match expected function signature
+      const onProgress: (message: string) => void = (message) => {
+        setStatus(message); // Update UI with the current file being processed
+      };
+
+      // Call the processing function with `onProgress`
+      const data = await processFunction(auth.accessToken, selectedFolder, onProgress);
+
+      // Create and save the Excel file
       const workbook = XLSX.utils.book_new();
       const worksheet = XLSX.utils.json_to_sheet(data);
       XLSX.utils.book_append_sheet(workbook, worksheet, title);

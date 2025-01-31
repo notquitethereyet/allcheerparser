@@ -21,7 +21,7 @@ const SheetsProcessor = () => {
 
   const extractFolderId = (link: string) => {
     const match = link.match(/[-\w]{25,}/);
-    return match ? String(match[0]) : null; // Ensure the result is a string
+    return match ? String(match[0]) : null;
   };
 
   const handleFetchFolders = async () => {
@@ -44,9 +44,7 @@ const SheetsProcessor = () => {
       setFolders(folderList);
     } catch (err) {
       setError(
-        `Failed to fetch folders. ${
-          err instanceof Error ? err.message : String(err)
-        }`
+        `Failed to fetch folders. ${err instanceof Error ? err.message : String(err)}`
       );
     } finally {
       setIsLoadingFolders(false);
@@ -61,6 +59,7 @@ const SheetsProcessor = () => {
             Schedule Data Processor
           </h1>
 
+          {/* Google Drive Folder Input */}
           <div className="mb-6">
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Google Drive Folder Share Link
@@ -85,39 +84,33 @@ const SheetsProcessor = () => {
             </button>
           </div>
 
+          {/* Error Message */}
           {error && (
-            <div className="mb-6 p-4 bg-red-100 text-red-700 rounded-lg">
-              {error}
-            </div>
+            <div className="mb-6 p-4 bg-red-100 text-red-700 rounded-lg">{error}</div>
           )}
 
+          {/* Folder Selection */}
           {folders.length > 0 && (
             <div className="mb-8">
               <h2 className="text-xl font-semibold mb-4">Folder Selection</h2>
               <FolderSelector
                 folders={folders}
                 selectedFolder={selectedFolders.clients}
-                onSelect={(id) =>
-                  setSelectedFolders((prev) => ({ ...prev, clients: id }))
-                }
+                onSelect={(id) => setSelectedFolders((prev) => ({ ...prev, clients: id }))}
                 label="Select Clients Folder"
                 disabled={isLoadingFolders}
               />
               <FolderSelector
                 folders={folders}
                 selectedFolder={selectedFolders.therapists}
-                onSelect={(id) =>
-                  setSelectedFolders((prev) => ({ ...prev, therapists: id }))
-                }
+                onSelect={(id) => setSelectedFolders((prev) => ({ ...prev, therapists: id }))}
                 label="Select Therapists Folder"
                 disabled={isLoadingFolders}
               />
               <FolderSelector
                 folders={folders}
                 selectedFolder={selectedFolders.supervisors}
-                onSelect={(id) =>
-                  setSelectedFolders((prev) => ({ ...prev, supervisors: id }))
-                }
+                onSelect={(id) => setSelectedFolders((prev) => ({ ...prev, supervisors: id }))}
                 label="Select Supervisors Folder"
                 disabled={isLoadingFolders}
               />
@@ -129,40 +122,40 @@ const SheetsProcessor = () => {
             <div className="space-y-8">
               <Processor
                 title="Clients"
-                processFunction={processClientData}
-                selectedFolder={
-                  selectedFolders.clients
-                    ? { clients: selectedFolders.clients, therapists: "", supervisors: "" }
-                    : null
+                processFunction={(authToken, folder, onProgress = () => {}) =>
+                  processClientData(authToken, folder, onProgress)
                 }
+                selectedFolder={selectedFolders.clients ? { clients: selectedFolders.clients } : {}}
                 disabled={isLoadingFolders || !selectedFolders.clients}
               />
               <Processor
                 title="Staff"
-                processFunction={processStaffData}
+                processFunction={(authToken, folder, onProgress = () => {}) =>
+                  processStaffData(authToken, folder, onProgress)
+                }
                 selectedFolder={
                   selectedFolders.therapists || selectedFolders.supervisors
                     ? {
-                      clients: "",
-                      therapists: selectedFolders.therapists,
-                      supervisors: selectedFolders.supervisors,
-                    }
-                    : null
+                        therapists: selectedFolders.therapists || "",
+                        supervisors: selectedFolders.supervisors || "",
+                      }
+                    : {}
                 }
-                disabled={
-                  isLoadingFolders ||
-                  (!selectedFolders.therapists && !selectedFolders.supervisors)
-                }
+                disabled={isLoadingFolders || (!selectedFolders.therapists && !selectedFolders.supervisors)}
               />
               <Processor
                 title="Addresses"
-                processFunction={processAddressData}
+                processFunction={(authToken, folder, onProgress = () => {}) =>
+                  processAddressData(authToken, folder, onProgress)
+                }
                 selectedFolder={
-                  selectedFolders.clients ||
-                    selectedFolders.therapists ||
-                    selectedFolders.supervisors
-                    ? selectedFolders
-                    : null
+                  selectedFolders.clients || selectedFolders.therapists || selectedFolders.supervisors
+                    ? {
+                        clients: selectedFolders.clients || "",
+                        therapists: selectedFolders.therapists || "",
+                        supervisors: selectedFolders.supervisors || "",
+                      }
+                    : {}
                 }
                 disabled={
                   isLoadingFolders ||
